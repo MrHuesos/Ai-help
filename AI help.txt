@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bartholomew's Big Find</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the comic panel text */
+        .panel-text {
+            font-family: 'Comic Sans MS', 'Inter', sans-serif; /* A more 'comic' like font, fallback to Inter */
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .loading-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Square panels */
+            background-color: #f3f4f6; /* gray-100 */
+        }
+        /* Style for the 'What Happens Next' button */
+        #continue-story-btn:disabled {
+            background-color: #9ca3af; /* gray-400 */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-200 min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Bartholomew's Big Find</h1>
+        
+        <!-- Comic Panel Grid -->
+        <div id="comic-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Panel 1 -->
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
+                <!-- Image Section -->
+                <div class="relative w-full" style="aspect-ratio: 1 / 1;">
+                    <!-- Loading Placeholder -->
+                    <div id="panel-1-loader" class="loading-placeholder animate-pulse">
+                        <p class="text-gray-500">Generating Panel 1...</p>
+                    </div>
+                    <!-- Image -->
+                    <img id="panel-1-image" src="" alt="Comic panel 1" class="w-full h-full object-cover hidden">
+                    <!-- Error Message -->
+                    <div id="panel-1-error" class="text-red-500 text-center p-4 hidden"></div>
+                </div>
+                <!-- Text Section -->
+                <div class="p-6 flex-grow">
+                    <p class="panel-text">Our story begins with Bartholomew, a slender, sleek black cat with piercing green eyes. He's on his daily patrol of the garage, but today, his stomach is issuing a particularly loud, empty <strong>GRRROWWLL!</strong></p>
+                </div>
+            </div>
+
+            <!-- Panel 2 -->
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
+                <!-- Image Section -->
+                <div class="relative w-full" style="aspect-ratio: 1 / 1;">
+                    <!-- Loading Placeholder -->
+                    <div id="panel-2-loader" class="loading-placeholder animate-pulse">
+                        <p class="text-gray-500">Generating Panel 2...</p>
+                    </div>
+                    <!-- Image -->
+                    <img id="panel-2-image" src="" alt="Comic panel 2" class="w-full h-full object-cover hidden">
+                    <!-- Error Message -->
+                    <div id="panel-2-error" class="text-red-500 text-center p-4 hidden"></div>
+                </div>
+                <!-- Text Section -->
+                <div class="p-6 flex-grow">
+                    <p class="panel-text">He freezes mid-stride. His ears pivot. <em>Sniff... sniff...</em> A magical, tantalizing aroma is cutting through the smell of dust and old tires. It's coming from... behind that loose panel in the wall!</p>
+                </div>
+            </div>
+
+            <!-- Panel 3 -->
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
+                <!-- Image Section -->
+                <div class="relative w-full" style="aspect-ratio: 1 / 1;">
+                    <!-- Loading Placeholder -->
+                    <div id="panel-3-loader" class="loading-placeholder animate-pulse">
+                        <p class="text-gray-500">Generating Panel 3...</p>
+                    </div>
+                    <!-- Image -->
+                    <img id="panel-3-image" src="" alt="Comic panel 3" class="w-full h-full object-cover hidden">
+                    <!-- Error Message -->
+                    <div id="panel-3-error" class="text-red-500 text-center p-4 hidden"></div>
+                </div>
+                <!-- Text Section -->
+                <div class="p-6 flex-grow">
+                    <p class="panel-text">With the skill of a master thief, Bartholomew hooks his claws into the panel's edge. A sharp <strong>PRY</strong> and a <strong>SCRATCH</strong>... and the panel gives way, tumbling inward with a soft <em>thud</em>.</p>
+                </div>
+            </div>
+
+            <!-- Panel 4 -->
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
+                <!-- Image Section -->
+                <div class="relative w-full" style="aspect-ratio: 1 / 1;">
+                    <!-- Loading Placeholder -->
+                    <div id="panel-4-loader" class="loading-placeholder animate-pulse">
+                        <p class="text-gray-500">Generating Panel 4...</p>
+                    </div>
+                    <!-- Image -->
+                    <img id="panel-4-image" src="" alt="Comic panel 4" class="w-full h-full object-cover hidden">
+                    <!-- Error Message -->
+                    <div id="panel-4-error" class="text-red-500 text-center p-4 hidden"></div>
+                </div>
+                <!-- Text Section -->
+                <div class="p-6 flex-grow">
+                    <p class="panel-text">Bartholomew peers into the darkness, his green eyes wide as saucers. It's... it's beautiful. A hidden treasure trove. Stack upon stack of "Captain Fin's Finest Tuna" and "Sir Kibble's Chicken Deluxe" bags. A heavenly choir practically sings.</p>
+                </div>
+            </div>
+
+        </div> <!-- End of Comic Grid -->
+
+        <!-- Gemini Continue Button -->
+        <div class="mt-8 text-center">
+            <button id="continue-story-btn" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                ✨ What Happens Next?
+            </button>
+            <p id="continue-loader" class="text-gray-600 mt-4 text-lg hidden">✨ Generating next panels... (This may take a moment)</p>
+        </div>
+
+    </div>
+
+    <script>
+        // API Key - leave as an empty string, Canvas will handle it
+        const apiKey = "";
+
+        // The image prompts from our story
+        const initialPrompts = [
+            { 
+                prompt: "A low-angle wide shot of a cluttered, dusty garage. Sunbeams cut through the dimness. In the foreground, a sleek black cat with green eyes stalks forward. He looks annoyed and hungry. A stylized 'GRRROWWLL!' text bubble is near his stomach. Comic book art style.",
+                imgId: "panel-1-image",
+                loaderId: "panel-1-loader",
+                errorId: "panel-1-error"
+            },
+            { 
+                prompt: "A medium close-up shot of a sleek black cat. He is crouched, nose twitching, green eyes wide with intense concentration. His gaze is locked on a loose wooden panel at the base of a garage wall. Wavy 'scent lines' drift from the crack. Comic book art style.",
+                imgId: "panel-2-image",
+                loaderId: "panel-2-loader",
+                errorId: "panel-2-error"
+            },
+            { 
+                prompt: "An action shot focusing on a black cat's paws, claws extended, hooked deep into a wooden panel. Small wood chips are flying. The panel is halfway open, revealing a dark space. Comic book style, dynamic motion.",
+                imgId: "panel-3-image",
+                loaderId: "panel-3-loader",
+                errorId: "panel-3-error"
+            },
+            { 
+                prompt: "A 'jackpot' shot from over a black cat's shoulder. The view looks into a dark, dusty alcove *filled* with colorful bags and cans of cat food. A glowing, golden aura emanates from the stash, illuminating the cat's stunned, wide-eyed face. Comic book art style.",
+                imgId: "panel-4-image",
+                loaderId: "panel-4-loader",
+                errorId: "panel-4-error"
+            }
+        ];
+
+        // --- NEW ---
+        // Schema for the Gemini Text API response
+        const geminiSchema = {
+            type: "ARRAY",
+            items: {
+                type: "OBJECT",
+                properties: {
+                    "panelText": { "type": "STRING" },
+                    "imagePrompt": { "type": "STRING" }
+                },
+                required: ["panelText", "imagePrompt"]
+            }
+        };
+
+        // --- REFACTORED ---
+        // Generic function to make an API call with exponential backoff
+        async function makeApiCall(apiUrl, payload, maxRetries = 5) {
+            let delay = 1000; // start with 1 second
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        // Special handling for 429 (Too Many Requests)
+                        if (response.status === 429) {
+                            // Don't throw, just retry after delay
+                            console.warn("Rate limited. Retrying after delay...");
+                        } else {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    } else {
+                        // If response is ok, return the JSON
+                        return await response.json();
+                    }
+
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        // Last retry failed
+                        console.error("API call failed after max retries:", error);
+                        throw error;
+                    }
+                }
+                // Wait before retrying
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2; // Double the delay
+            }
+            throw new Error("API call failed after max retries.");
+        }
+
+
+        // --- NEW ---
+        // Function to call the Gemini text generation API
+        async function callGeminiTextApi(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: {
+                    parts: [{ text: "You are Story Comic, an AI that creates comic book stories. Continue the story based on the previous panels. Always generate exactly 2 new panels. Ensure the story progresses logically and the image prompts are detailed and in a comic-book style." }]
+                },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: geminiSchema
+                }
+            };
+            return makeApiCall(apiUrl, payload);
+        }
+
+        // --- NEW ---
+        // Function to call the Imagen API
+        async function callImagenApi(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+            const payload = { 
+                instances: [{ prompt: prompt }],
+                parameters: { "sampleCount": 1 }
+            };
+            return makeApiCall(apiUrl, payload);
+        }
+
+
+        // --- REFACTORED ---
+        // Generates and displays an image for a single panel
+        async function generateImageForPanel(prompt, imgId, loaderId, errorId) {
+            const imgElement = document.getElementById(imgId);
+            const loaderElement = document.getElementById(loaderId);
+            const errorElement = document.getElementById(errorId);
+
+            try {
+                const result = await callImagenApi(prompt);
+                
+                if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                    const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                    imgElement.src = imageUrl;
+                    imgElement.classList.remove('hidden');
+                } else {
+                    throw new Error("Invalid response structure from Imagen API.");
+                }
+
+            } catch (error) {
+                console.error(`Failed to generate image for ${imgId}:`, error);
+                errorElement.textContent = "Failed to generate image.";
+                errorElement.classList.remove('hidden');
+            } finally {
+                loaderElement.classList.add('hidden');
+            }
+        }
+
+        // --- REFACTORED ---
+        // Function to generate and display the *initial* images
+        async function generateInitialPanels() {
+            for (const item of initialPrompts) {
+                // Run in parallel for faster loading
+                generateImageForPanel(item.prompt, item.imgId, item.loaderId, item.errorId);
+            }
+        }
+
+        // --- NEW ---
+        // Function to handle the "Continue Story" button click
+        async function continueStory() {
+            const continueBtn = document.getElementById('continue-story-btn');
+            const continueLoader = document.getElementById('continue-loader');
+            const grid = document.getElementById('comic-grid');
+
+            continueBtn.disabled = true;
+            continueLoader.classList.remove('hidden');
+
+            try {
+                // 1. Collect the story so far
+                const history = Array.from(document.querySelectorAll('.panel-text'))
+                                   .map(p => p.innerText.trim())
+                                   .join('\n\n');
+                
+                const llmPrompt = `The story so far:\n${history}\n\nPlease continue the story with the next 2 panels. Bartholomew has just found the food. Now, show him starting to eat and the immediate consequences. He should go for the 'Sir Kibble's Chicken Deluxe' bag first.`;
+
+                // 2. Call Gemini API to get new story panels
+                const result = await callGeminiTextApi(llmPrompt);
+                
+                if (!result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                     throw new Error("Invalid response from Gemini text API.");
+                }
+
+                const newPanels = JSON.parse(result.candidates[0].content.parts[0].text);
+
+                // 3. Create and append new panels
+                let panelCounter = grid.children.length + 1;
+                for (const panel of newPanels) {
+                    const panelId = panelCounter;
+                    
+                    const panelHtml = `
+                    <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col animate-fade-in">
+                        <div class="relative w-full" style="aspect-ratio: 1 / 1;">
+                            <div id="panel-${panelId}-loader" class="loading-placeholder animate-pulse">
+                                <p class="text-gray-500">Generating Panel ${panelId}...</p>
+                            </div>
+                            <img id="panel-${panelId}-image" src="" alt="Comic panel ${panelId}" class="w-full h-full object-cover hidden">
+                            <div id="panel-${panelId}-error" class="text-red-500 text-center p-4 hidden"></div>
+                        </div>
+                        <div class="p-6 flex-grow">
+                            <p class="panel-text">${panel.panelText}</p>
+                        </div>
+                    </div>`;
+                    
+                    grid.insertAdjacentHTML('beforeend', panelHtml);
+
+                    // 4. Call Imagen API for the new panel's image
+                    // We await this one so they appear in order
+                    await generateImageForPanel(panel.imagePrompt, `panel-${panelId}-image`, `panel-${panelId}-loader`, `panel-${panelId}-error`);
+
+                    panelCounter++;
+                }
+
+            } catch (error) {
+                console.error("Failed to continue story:", error);
+                continueLoader.textContent = "Error generating new panels. Please try again.";
+                // Re-enable button on failure so user can retry
+                continueBtn.disabled = false;
+                // Hide loader after a moment
+                setTimeout(() => {
+                    continueLoader.classList.add('hidden');
+                    continueLoader.textContent = "✨ Generating next panels... (This may take a moment)";
+                }, 3000);
+                return; // Stop execution
+            }
+
+            // 5. Re-enable button on success
+            continueBtn.disabled = false;
+            continueLoader.classList.add('hidden');
+        }
+
+        // --- NEW ---
+        // Add animation style for new panels
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in {
+                animation: fadeIn 0.5s ease-out;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // --- EVENT LISTENERS ---
+        // Start initial generation when the window loads
+        window.onload = generateInitialPanels;
+        // Add click listener for the new button
+        document.getElementById('continue-story-btn').addEventListener('click', continueStory);
+
+    </script>
+</body>
+</html>
+
