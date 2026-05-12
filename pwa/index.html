@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mi Presupuesto">
+  <meta name="theme-color" content="#34C759">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <title>Mi Presupuesto</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ========== DASHBOARD ========== -->
+  <div id="tab-dashboard" class="tab-content active">
+    <div class="nav-bar">
+      <h1 class="nav-title">Mi Presupuesto</h1>
+      <button class="nav-btn" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+    <div class="scroll-content" id="dashboard-content">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ========== GASTOS ========== -->
+  <div id="tab-gastos" class="tab-content">
+    <div class="nav-bar">
+      <h1 class="nav-title">Gastos</h1>
+      <button class="nav-btn" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+    <div class="search-bar-wrap">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="search-input" placeholder="Buscar gasto..." oninput="renderGastos()">
+      </div>
+    </div>
+    <div class="filter-bar" id="filter-bar"></div>
+    <div class="scroll-content" id="gastos-content"></div>
+  </div>
+
+  <!-- ========== CONFIG ========== -->
+  <div id="tab-config" class="tab-content">
+    <div class="nav-bar">
+      <h1 class="nav-title">Configuración</h1>
+    </div>
+    <div class="scroll-content">
+
+      <div class="section-header">MIS INGRESOS</div>
+      <div class="card">
+        <div class="form-row">
+          <label>Sueldo</label>
+          <div class="amount-input-wrap">
+            <span class="currency-sign">$</span>
+            <input type="number" id="cfg-income" placeholder="0.00" inputmode="decimal" onchange="saveConfig()">
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="form-row">
+          <label>Periodo</label>
+          <select id="cfg-period" onchange="saveConfig()">
+            <option value="biweekly">Quincenal (15 días)</option>
+            <option value="monthly">Mensual (30 días)</option>
+          </select>
+        </div>
+        <div class="divider"></div>
+        <div id="cfg-summary"></div>
+      </div>
+
+      <div class="section-header">PERIODO ACTUAL</div>
+      <div class="card" id="cfg-period-info"></div>
+
+      <div class="section-header">APPLE PAY / ATAJOS</div>
+      <div class="card">
+        <button class="list-btn" onclick="showShortcutsInfo()">
+          <div class="list-btn-icon" style="background:#A855F7">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          </div>
+          <div class="list-btn-text">
+            <span>Automatizar con Atajos</span>
+            <small>Registra pagos de Apple Pay automáticamente</small>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="section-header">DATOS</div>
+      <div class="card">
+        <button class="list-btn danger" onclick="confirmClearAll()">
+          <div class="list-btn-icon" style="background:#FF3B30">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </div>
+          <span>Borrar todos los gastos</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <div style="height: 40px"></div>
+    </div>
+  </div>
+
+  <!-- ========== TAB BAR ========== -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2.03 0v8.99H22c-.47-4.74-4.24-8.52-8.97-8.99zm0 11.01V22c4.74-.47 8.5-4.25 8.97-8.99h-8.97z"/></svg>
+      <span>Inicio</span>
+    </button>
+    <button class="tab-btn" data-tab="gastos" onclick="switchTab('gastos')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      <span>Gastos</span>
+    </button>
+    <button class="tab-btn" data-tab="config" onclick="switchTab('config')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      <span>Configurar</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- ========== ADD TRANSACTION MODAL ========== -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModalOutside(event)">
+  <div class="modal-sheet" id="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <button class="modal-cancel" onclick="closeModal()">Cancelar</button>
+      <h2>Nuevo Gasto</h2>
+      <button class="modal-save" onclick="saveTransaction()" id="btn-save">Guardar</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Amount -->
+      <div class="amount-section">
+        <span class="big-currency">$</span>
+        <input type="number" id="tx-amount" placeholder="0.00" inputmode="decimal" class="big-amount-input" oninput="updateModalCalc()">
+      </div>
+      <div id="modal-calc" class="modal-calc"></div>
+
+      <!-- Description -->
+      <div class="field-group">
+        <div class="field-label">DESCRIPCIÓN</div>
+        <input type="text" id="tx-desc" placeholder="¿En qué gastaste?" class="text-input" oninput="validateModal()">
+      </div>
+
+      <!-- Category -->
+      <div class="field-group">
+        <div class="field-label">CATEGORÍA</div>
+        <div class="category-grid" id="category-grid"></div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="field-group">
+        <div class="field-label">MÉTODO DE PAGO</div>
+        <div class="method-list" id="method-list"></div>
+      </div>
+
+      <!-- Date -->
+      <div class="field-group">
+        <div class="field-label">FECHA Y HORA</div>
+        <input type="datetime-local" id="tx-date" class="text-input">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SHORTCUTS INFO MODAL ========== -->
+<div id="shortcuts-overlay" class="modal-overlay hidden" onclick="closeShortcuts(event)">
+  <div class="modal-sheet" id="shortcuts-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div></div>
+      <h2>Apple Pay + Atajos</h2>
+      <button class="modal-save" onclick="closeShortcuts()">Listo</button>
+    </div>
+    <div class="modal-body">
+      <div class="shortcuts-icon">
+        <svg viewBox="0 0 24 24" fill="white" width="40" height="40"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+      </div>
+      <h3 style="text-align:center;margin:12px 0 4px">Registra pagos automáticamente</h3>
+      <p class="shortcuts-desc">Cuando pagues con Apple Pay, un Atajo puede registrarlo aquí en un toque.</p>
+
+      <div class="steps-list">
+        <div class="step"><div class="step-num">1</div><p>Abre la app <strong>Atajos</strong> en tu iPhone</p></div>
+        <div class="step"><div class="step-num">2</div><p>Ve a la pestaña <strong>Automatización</strong></p></div>
+        <div class="step"><div class="step-num">3</div><p>Toca <strong>+</strong> → Nueva automatización → <strong>Transacción Apple Pay</strong></p></div>
+        <div class="step"><div class="step-num">4</div><p>Agrega la acción <strong>Abrir URL</strong> y pega esta URL:</p></div>
+      </div>
+
+      <div class="code-box" id="url-scheme-box">
+        <code id="url-scheme-text">https://mrhuesos.github.io/ai-help/pwa/?add=1&amount=MONTO&desc=COMERCIO</code>
+        <button class="copy-btn" onclick="copyURL()">Copiar</button>
+      </div>
+
+      <div class="step" style="margin-top:12px"><div class="step-num">5</div><p>Activa la automatización. ¡Listo! Cada pago se registrará automáticamente.</p></div>
+
+      <div class="info-note">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        <span>También puedes registrar cualquier pago manualmente tocando el botón <strong>+</strong>.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
