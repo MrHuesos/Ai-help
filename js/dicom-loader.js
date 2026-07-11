@@ -60,6 +60,20 @@ function median(arr) {
   return s[Math.floor(s.length / 2)];
 }
 
+// Identifica por bytes mágicos los formatos que la gente sube por error.
+function sniffFileKind(b) {
+  if (!b || b.length < 12) return 'other';
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image'; // JPEG
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return 'image'; // PNG
+  if (b[0] === 0x42 && b[1] === 0x4d) return 'image'; // BMP
+  if (b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) return 'image'; // GIF
+  if (b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) return 'image'; // WEBP
+  if (b[4] === 0x66 && b[5] === 0x74 && b[6] === 0x79 && b[7] === 0x70) return 'image'; // HEIC/AVIF (ftyp)
+  if (b[0] === 0x25 && b[1] === 0x50 && b[2] === 0x44 && b[3] === 0x46) return 'image'; // PDF (informe)
+  if (b[0] === 0x50 && b[1] === 0x4b && (b[2] === 0x03 || b[2] === 0x05)) return 'zip'; // ZIP
+  return 'other';
+}
+
 /**
  * @param {File[]} files
  * @param {(done:number, total:number, phase:string) => void} onProgress
@@ -73,12 +87,19 @@ export async function loadDicomFiles(files, onProgress, limits = {}) {
   const warnings = [];
   let unsupportedCompressed = 0;
   let unreadable = 0;
+  let regularImages = 0;
+  let zipFiles = 0;
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
+    let byteArray = null;
     try {
-      const buffer = await file.arrayBuffer();
-      const byteArray = new Uint8Array(buffer);
+      byteArray = new Uint8Array(await file.arrayBuffer());
+    } catch {
+      unreadable++;
+      continue;
+    }
+    try {
       const dataSet = dicomParser.parseDicom(byteArray);
       const ts = (dataSet.string('x00020010') || '1.2.840.10008.1.2').trim();
       if (!SUPPORTED_TS.has(ts)) {
@@ -93,7 +114,10 @@ export async function loadDicomFiles(files, onProgress, limits = {}) {
       meta.byteArray = byteArray;
       slices.push(meta);
     } catch {
-      unreadable++;
+      const kind = sniffFileKind(byteArray);
+      if (kind === 'image') regularImages++;
+      else if (kind === 'zip') zipFiles++;
+      else unreadable++;
     }
     if (onProgress && (i % 5 === 0 || i === files.length - 1)) {
       onProgress(i + 1, files.length, 'Leyendo archivos');
@@ -107,10 +131,30 @@ export async function loadDicomFiles(files, onProgress, limits = {}) {
       `Exporte la serie sin compresión ("Little Endian") desde su estación PACS.`
     );
   }
+  if (regularImages > 0) {
+    warnings.push(`${regularImages} archivo(s) eran fotos o documentos (JPG/PNG/PDF) y se omitieron.`);
+  }
+  if (zipFiles > 0) {
+    warnings.push(`${zipFiles} archivo(s) .zip: descomprímalos primero y suba su contenido.`);
+  }
   if (unreadable > 0) {
     warnings.push(`${unreadable} archivo(s) no eran DICOM válidos y se omitieron.`);
   }
   if (slices.length === 0) {
+    if (regularImages > 0) {
+      throw new Error(
+        'Los archivos seleccionados son fotografías o capturas (JPG/PNG/PDF), no archivos DICOM. ' +
+        'Una foto de la tomografía no contiene la información 3D: solo muestra unos pocos cortes ya procesados. ' +
+        'Para la reconstrucción 3D necesita los archivos DICOM originales del estudio, que puede pedir en el centro ' +
+        'de imágenes (los entregan en CD, USB o por el portal del paciente, normalmente cientos de archivos, uno por corte).'
+      );
+    }
+    if (zipFiles > 0) {
+      throw new Error(
+        'El archivo es un ZIP comprimido. Descomprímalo primero (manténgalo pulsado → Descomprimir en el teléfono, ' +
+        'o clic derecho → Extraer en la computadora) y luego suba la carpeta con los archivos DICOM que contiene.'
+      );
+    }
     throw new Error('No se encontró ningún corte DICOM legible en los archivos seleccionados.');
   }
 
